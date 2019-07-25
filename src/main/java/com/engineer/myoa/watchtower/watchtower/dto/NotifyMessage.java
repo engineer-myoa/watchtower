@@ -15,6 +15,6 @@ public class NotifyMessage {
 
 	private String token;
 	private String message;
-	private List<String> chatId;
+	private List<String> chatIdList;
 
 }

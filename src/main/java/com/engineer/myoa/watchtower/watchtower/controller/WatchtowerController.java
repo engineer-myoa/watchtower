@@ -1,22 +1,21 @@
 package com.engineer.myoa.watchtower.watchtower.controller;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.engineer.myoa.watchtower.configuration.RabbitMQConfiguration;
 import com.engineer.myoa.watchtower.property.AbstractController;
 import com.engineer.myoa.watchtower.property.CommonResponse;
+import com.engineer.myoa.watchtower.watchtower.component.WatchtowerMessageProducer;
 import com.engineer.myoa.watchtower.watchtower.dto.NotifyMessage;
-import com.engineer.myoa.watchtower.watchtower.dto.TelegramMessage;
-import com.engineer.myoa.watchtower.watchtower.service.WatchtowerService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,23 +25,21 @@ import lombok.extern.slf4j.Slf4j;
 public class WatchtowerController extends AbstractController {
 
 	@Autowired
-	private WatchtowerService watchtowerService;
+	private WatchtowerMessageProducer watchtowerMessageProducer;
 
-	@PostMapping("/messages")
+	@PostMapping("/telegram/messages")
 	public ResponseEntity<CommonResponse<String>> sendMessage(HttpServletRequest request,
 		@RequestBody NotifyMessage message) {
 
-		CommonResponse<String> response = watchtowerService.sendMessage(message);
-		return makeResponse(request, response);
-	}
+		CommonResponse<String> response = null;
+		try {
+			watchtowerMessageProducer.produceTelegramMessage(message);
+			response = CommonResponse.success("produced");
+		} catch (IOException e) {
+			e.printStackTrace();
+			response = CommonResponse.success("produce failed", HttpStatus.INTERNAL_SERVER_ERROR);
 
-	@Autowired
-	private RabbitTemplate rabbitTemplate;
-
-	@GetMapping("/")
-	public ResponseEntity<CommonResponse<String>> test(HttpServletRequest request) {
-		rabbitTemplate.convertAndSend(RabbitMQConfiguration.QUEUE_NAME, new TelegramMessage("123123", "HIHI"));
-
-		return makeResponse(request, new CommonResponse<>());
+		}
+		return makeResponse(request, response, response.getHttpStatus());
 	}
 }

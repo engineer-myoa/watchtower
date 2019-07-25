@@ -2,12 +2,14 @@ package com.engineer.myoa.watchtower.watchtower.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -33,11 +35,15 @@ public class WatchtowerService {
 	@Autowired
 	private RestTemplate restTemplate;
 
-	public CommonResponse<String> sendMessage(NotifyMessage message) {
+	public CommonResponse<String> sendTelegramMessage(NotifyMessage messageDto) {
 		log.info("URL : {}", botApiUrl);
 
 		String methodName = "sendMessage";
-		String token = message.getToken();
+		String token = messageDto.getToken();
+
+		if (token == null || token.isEmpty()) {
+			return CommonResponse.fail("Token is null or empty", HttpStatus.UNAUTHORIZED);
+		}
 
 		UriComponentsBuilder uriBuilder = ServletUriComponentsBuilder
 			.fromUriString(String.format("%s%s/%s", botApiUrl, token, methodName));
@@ -48,15 +54,17 @@ public class WatchtowerService {
 		headers.add("accept-encoding", "gzip, deflate");
 		headers.add("Accept", "*/*");
 
-		for (String chatId : message.getChatId()) {
-
-			TelegramMessage telegramMessage = new TelegramMessage(chatId, message.getMessage());
-
+		if (messageDto.getChatIdList() == null || messageDto.getChatIdList().isEmpty()) {
+			return CommonResponse.fail("chatIdList is null or empty", HttpStatus.BAD_REQUEST);
+		}
+		Stream<String> parallelStream = messageDto.getChatIdList().parallelStream();
+		parallelStream.forEach(chatId -> {
+			TelegramMessage telegramMessage = new TelegramMessage(chatId, messageDto.getMessage());
 			HttpEntity<TelegramMessage> requestBody = new HttpEntity<TelegramMessage>(telegramMessage, headers);
 			ResponseEntity response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.POST, requestBody, Map.class);
 			log.info("BODY : {}", response.getBody());
-		}
+		});
 
-		return CommonResponse.success("null");
+		return CommonResponse.success("success");
 	}
 }
