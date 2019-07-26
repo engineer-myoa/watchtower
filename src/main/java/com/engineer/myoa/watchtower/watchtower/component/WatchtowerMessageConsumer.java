@@ -17,7 +17,7 @@ public class WatchtowerMessageConsumer {
 	@Autowired
 	WatchtowerService watchtowerService;
 
-	@RabbitListener(queues = RabbitMQConfiguration.QUEUE_NAME)
+	@RabbitListener(containerFactory = "MQcontainerFactory", queues = {RabbitMQConfiguration.QUEUE_NAME})
 	public void consumeTelegramMessage(NotifyMessage message) {
 		log.info("Consuming..... {}", message);
 		watchtowerService.sendTelegramMessage(message);

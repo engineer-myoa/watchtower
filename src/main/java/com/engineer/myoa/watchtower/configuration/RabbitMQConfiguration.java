@@ -1,18 +1,16 @@
 package com.engineer.myoa.watchtower.configuration;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.CustomExchange;
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
+import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.config.StatelessRetryOperationsInterceptorFactoryBean;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
+import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.amqp.rabbit.retry.RejectAndDontRequeueRecoverer;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
@@ -23,6 +21,7 @@ import org.springframework.retry.policy.SimpleRetryPolicy;
 import org.springframework.retry.support.RetryTemplate;
 
 import com.engineer.myoa.watchtower.watchtower.component.MQRecoverer;
+import com.engineer.myoa.watchtower.watchtower.component.WatchtowerMessageConsumer;
 
 @Configuration
 @EnableRabbit
@@ -53,15 +52,21 @@ public class RabbitMQConfiguration {
 		return rabbitTemplate;
 	}
 
+	@Bean("MQcontainerFactory")
+	public SimpleRabbitListenerContainerFactory messageListenerContainer() {
+		SimpleRabbitListenerContainerFactory messageListenerContainer = new SimpleRabbitListenerContainerFactory();
+		messageListenerContainer.setConnectionFactory(connectionFactory());
+		messageListenerContainer.setMessageConverter(jsonMessageConverter());
+		messageListenerContainer.setAutoStartup(true);
+		messageListenerContainer.setPrefetchCount(1);
+		messageListenerContainer.setConcurrentConsumers(1);
+		messageListenerContainer.setAdviceChain(retryInterceptor());
+		return messageListenerContainer;
+	}
+
 	@Bean
-	public SimpleMessageListenerContainer messageListener() {
-		SimpleMessageListenerContainer messageListener = new SimpleMessageListenerContainer();
-		messageListener.setConnectionFactory(connectionFactory());
-		messageListener.setQueueNames(QUEUE_NAME);
-		messageListener.setAutoDeclare(true);
-		messageListener.setAutoStartup(true);
-		messageListener.setAdviceChain(retryInterceptor());
-		return messageListener;
+	public MessageListenerAdapter listenerAdapter(WatchtowerMessageConsumer consumer) {
+		return new MessageListenerAdapter(consumer, "consumeTelegramMessage");
 	}
 
 	@Bean
@@ -70,15 +75,13 @@ public class RabbitMQConfiguration {
 	}
 
 	@Bean
-	public CustomExchange exchange() {
-		Map<String, Object> args = new HashMap<>();
-		args.put("x-delay", 1000);
-		return new CustomExchange(EXCHANGE_NAME, "", false, true, args);
+	public TopicExchange exchange() {
+		return new TopicExchange(EXCHANGE_NAME);
 	}
 
 	@Bean
-	public Binding binding(Queue queue, CustomExchange exchange) {
-		return BindingBuilder.bind(queue).to(exchange).with(QUEUE_NAME).noargs();
+	public Binding binding(Queue queue, TopicExchange exchange) {
+		return BindingBuilder.bind(queue).to(exchange).with(QUEUE_NAME);
 	}
 
 	/**
