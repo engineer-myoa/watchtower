@@ -1,19 +1,28 @@
 package com.engineer.myoa.watchtower.configuration;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.CustomExchange;
 import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
-import org.springframework.amqp.rabbit.config.RetryInterceptorBuilder;
+import org.springframework.amqp.rabbit.config.StatelessRetryOperationsInterceptorFactoryBean;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
+import org.springframework.amqp.rabbit.retry.RejectAndDontRequeueRecoverer;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.retry.interceptor.StatefulRetryOperationsInterceptor;
+import org.springframework.retry.backoff.ExponentialBackOffPolicy;
+import org.springframework.retry.interceptor.RetryOperationsInterceptor;
+import org.springframework.retry.policy.SimpleRetryPolicy;
+import org.springframework.retry.support.RetryTemplate;
+
+import com.engineer.myoa.watchtower.watchtower.component.MQRecoverer;
 
 @Configuration
 @EnableRabbit
@@ -40,6 +49,7 @@ public class RabbitMQConfiguration {
 		RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory());
 		rabbitTemplate.setRoutingKey(QUEUE_NAME);
 		rabbitTemplate.setMessageConverter(jsonMessageConverter());
+		rabbitTemplate.setRetryTemplate(retryTemplate());
 		return rabbitTemplate;
 	}
 
@@ -51,6 +61,7 @@ public class RabbitMQConfiguration {
 		messageListener.setRecoveryInterval(1000L);
 		messageListener.setRetryDeclarationInterval(1000L);
 		messageListener.setDeclarationRetries(3);
+		messageListener.setAdviceChain(retryInterceptor());
 		return messageListener;
 	}
 
@@ -60,20 +71,67 @@ public class RabbitMQConfiguration {
 	}
 
 	@Bean
-	public TopicExchange exchange() {
-		return new TopicExchange(EXCHANGE_NAME);
+	public CustomExchange exchange() {
+		Map<String, Object> args = new HashMap<>();
+		args.put("x-delay", 1000);
+		return new CustomExchange(EXCHANGE_NAME, "", false, true, args);
 	}
 
 	@Bean
-	public Binding binding(Queue queue, TopicExchange exchange) {
-		return BindingBuilder.bind(queue).to(exchange).with(QUEUE_NAME);
+	public Binding binding(Queue queue, CustomExchange exchange) {
+		return BindingBuilder.bind(queue).to(exchange).with(QUEUE_NAME).noargs();
 	}
 
+	/**
+	 * Requeue message when failed consiming even create RetryTemplate bean, even reached max retry attemption.
+	 * So need to restrict requeueing, covered exception. This retryInterceptor bean will be proceed.
+	 * And register retryInterceptor in listener's AOP advice chaning
+	 *
+	 * @return {@link RetryOperationsInterceptor}
+	 */
 	@Bean
-	StatefulRetryOperationsInterceptor interceptor() {
-		return RetryInterceptorBuilder.stateful()
-			.maxAttempts(5)
-			.backOffOptions(1000, 2.0, 10000)
-			.build();
+	public RetryOperationsInterceptor retryInterceptor() {
+		StatelessRetryOperationsInterceptorFactoryBean retryInterceptor = new StatelessRetryOperationsInterceptorFactoryBean();
+
+		// Set (Custom)Recoverer, retryTemplate
+		retryInterceptor.setMessageRecoverer(mqRecoverer());
+		retryInterceptor.setRetryOperations(retryTemplate());
+		return retryInterceptor.getObject();
+	}
+
+	/**
+	 * Custom message queue recoverer that extends {@link RejectAndDontRequeueRecoverer}
+	 * Recoverer can receive message and exception message
+	 * Warning: {@link RejectAndDontRequeueRecoverer} reject requeueing.
+	 * If you want requeue that message(s), Change inherited class or re-send(produce) message(s).
+	 *
+	 * @return {@link MQRecoverer}
+	 */
+	@Bean
+	public MQRecoverer mqRecoverer() {
+		return new MQRecoverer();
+	}
+
+	/**
+	 * RabbitMQ will tried to push messages to subscriber. Even not want to that.
+	 * Because default RabbitMQ configurations are contained ack mode.
+	 * Consumer fail to process. Next, consumer not send acknowledge.
+	 * That persuade message(s) keep alive in specific queue.
+	 * So restrict max attempt count, set retry interval like Round-Robbin.
+	 *
+	 * @return {@link RetryTemplate}
+	 */
+	@Bean
+	public RetryTemplate retryTemplate() {
+		RetryTemplate retryTemplate = new RetryTemplate();
+		retryTemplate.setRetryPolicy(new SimpleRetryPolicy(5));
+
+		// Default backoff-policy has 3 times restriction
+		ExponentialBackOffPolicy backOffPolicy = new ExponentialBackOffPolicy();
+		backOffPolicy.setInitialInterval(1000L);
+		backOffPolicy.setMultiplier(2.0D);
+		backOffPolicy.setInitialInterval(10000L);
+		retryTemplate.setBackOffPolicy(backOffPolicy);
+		return retryTemplate;
 	}
 }
