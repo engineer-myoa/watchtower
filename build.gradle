@@ -8,7 +8,7 @@ apply plugin: 'application'
 apply plugin: 'java'
 
 group = 'com.engineer.myoa'
-version = '0.0.2-SNAPSHOT'
+version = '0.0.2'
 sourceCompatibility = '1.8'
 
 jar {
