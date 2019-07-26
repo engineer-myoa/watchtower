@@ -58,9 +58,8 @@ public class RabbitMQConfiguration {
 		SimpleMessageListenerContainer messageListener = new SimpleMessageListenerContainer();
 		messageListener.setConnectionFactory(connectionFactory());
 		messageListener.setQueueNames(QUEUE_NAME);
-		messageListener.setRecoveryInterval(1000L);
-		messageListener.setRetryDeclarationInterval(1000L);
-		messageListener.setDeclarationRetries(3);
+		messageListener.setAutoDeclare(true);
+		messageListener.setAutoStartup(true);
 		messageListener.setAdviceChain(retryInterceptor());
 		return messageListener;
 	}
