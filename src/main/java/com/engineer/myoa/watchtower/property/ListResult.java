@@ -12,14 +12,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class ListResult<T> {
-	List<T> result;
-	Long total;
-	Long offset;
-	Long limit;
+	List<T> contents;
+	Long paginate;
 
 	public static <T> ListResult<T> of(List<T> result) {
 		return ListResult.<T>builder()
-			.result(result)
+			.contents(result)
 			.build();
 	}
 }

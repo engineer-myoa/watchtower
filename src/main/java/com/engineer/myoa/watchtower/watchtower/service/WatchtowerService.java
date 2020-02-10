@@ -13,10 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.engineer.myoa.watchtower.property.CommonResponse;
 import com.engineer.myoa.watchtower.watchtower.dto.NotifyMessage;
 import com.engineer.myoa.watchtower.watchtower.dto.TelegramMessage;
 
@@ -45,14 +43,12 @@ public class WatchtowerService {
 			return CommonResponse.fail("Token is null or empty", HttpStatus.UNAUTHORIZED);
 		}
 
-		UriComponentsBuilder uriBuilder = ServletUriComponentsBuilder
+		UriComponentsBuilder uriBuilder = UriComponentsBuilder
 			.fromUriString(String.format("%s%s/%s", botApiUrl, token, methodName));
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Content-Type", "application/json");
 		headers.add("Host", "api.telegram.org");
-		headers.add("accept-encoding", "gzip, deflate");
-		headers.add("Accept", "*/*");
 
 		if (messageDto.getChatIdList() == null || messageDto.getChatIdList().isEmpty()) {
 			return CommonResponse.fail("chatIdList is null or empty", HttpStatus.BAD_REQUEST);
@@ -61,8 +57,17 @@ public class WatchtowerService {
 		parallelStream.forEach(chatId -> {
 			TelegramMessage telegramMessage = new TelegramMessage(chatId, messageDto.getMessage());
 			HttpEntity<TelegramMessage> requestBody = new HttpEntity<TelegramMessage>(telegramMessage, headers);
+			log.info("REQUEST URI : {}", uriBuilder.toUriString());
+			log.info("REQUEST BODY : {}", requestBody);
+
 			ResponseEntity response = restTemplate.exchange(uriBuilder.toUriString(), HttpMethod.POST, requestBody, Map.class);
+			if (response.getStatusCode() != HttpStatus.OK) {
+				log.info("ERROR : {}, {}", response.getStatusCode(), response.getBody());
+				return;
+			}
+
 			log.info("BODY : {}", response.getBody());
+			return;
 		});
 
 		return CommonResponse.success("success");
