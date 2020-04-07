@@ -5,7 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-import com.engineering.myoa.watchtower.support.configuration.RestTemplateConfiguration;
+import com.engineering.myoa.watchtower.support.cache.EhCacheConfiguration;
+import com.engineering.myoa.watchtower.support.rest.RestTemplateConfiguration;
 
 /**
  * CrawlerApplication
@@ -16,7 +17,7 @@ import com.engineering.myoa.watchtower.support.configuration.RestTemplateConfigu
 @EnableScheduling
 @SpringBootApplication
 @Import({
-        RestTemplateConfiguration.class
+        RestTemplateConfiguration.class, EhCacheConfiguration.class,
 })
 public class CrawlerApplication {
     public static void main(String[] args) {

@@ -27,4 +27,9 @@ public enum DomesticCategory {
 
     private String description;
     private String page;
+    private static final String API_NAME = "ppomppu-domestic";
+
+    public String getApiUnitName() {
+        return this.API_NAME;
+    }
 }

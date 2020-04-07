@@ -26,7 +26,7 @@ import com.zaxxer.hikari.HikariDataSource;
 @Configuration
 public class H2Configuration {
 
-    @Bean("h2DataSource")
+    @Bean("dataSource")
     @ConfigurationProperties("spring.datasource.hikari")
     public DataSource dataSource() throws SQLException {
         HikariDataSource hikariDataSource = new HikariDataSource();
@@ -35,14 +35,14 @@ public class H2Configuration {
 
     @Bean("entityManagerFactory")
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(
-            @Qualifier("h2DataSource") DataSource dataSource,
+            @Qualifier("dataSource") DataSource dataSource,
             EntityManagerFactoryBuilder builder) {
         return builder.dataSource(dataSource)
                       .packages(DomainBase.class)
                       .build();
     }
 
-    @Bean("h2TransactionManager")
+    @Bean("transactionManager")
     public PlatformTransactionManager transactionManager(
             @Qualifier("entityManagerFactory") EntityManagerFactory h2EntityManagerFactory) {
         return new JpaTransactionManager(h2EntityManagerFactory);

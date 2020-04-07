@@ -13,7 +13,9 @@ ext {
     apacheHttpComponentsCoreVersion = "4.4.13"
     mysqlConnectorVersion = "8.0.15"
     hibernateVersion = "5.4.2.Final"
-    
+    jsoupVersion = "1.13.1"
+    ehCacheVersion = "3.8.1"
+
     common = [
             jsr305          : "com.google.code.findbugs:jsr305:${jsr305Version}",
             handlebars      : "com.github.jknack:handlebars:${handlebarsVersion}",
@@ -28,8 +30,10 @@ ext {
             httpclient      : "org.apache.httpcomponents:httpclient:${apacheHttpComponentsClientVersion}",
             httpcore        : "org.apache.httpcomponents:httpcore:${apacheHttpComponentsCoreVersion}",
             mysql           : "mysql:mysql-connector-java:${mysqlConnectorVersion}",
-            h2              : "com.h2database:h2"
-
+            h2              : "com.h2database:h2",
+            jsoup           : "org.jsoup:jsoup:${jsoupVersion}",
+            ehcache         : "org.ehcache:ehcache:${ehCacheVersion}",
+            cache_api       : "javax.cache:cache-api",
     ]
 
 

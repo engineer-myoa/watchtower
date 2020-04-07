@@ -1,4 +1,4 @@
-package com.engineering.myoa.watchtower.support.configuration;
+package com.engineering.myoa.watchtower.support.rest;
 
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;

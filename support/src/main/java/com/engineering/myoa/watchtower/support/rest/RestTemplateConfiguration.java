@@ -1,4 +1,4 @@
-package com.engineering.myoa.watchtower.support.configuration;
+package com.engineering.myoa.watchtower.support.rest;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,7 +30,7 @@ public class RestTemplateConfiguration {
     private static final int DEFAULT_CONNECTION_TIMEOUT = 5_000;
 
     @Primary
-    @Bean
+    @Bean("verboseRestTemplate")
     public RestTemplate verboseRestTemplate() {
         final RestTemplate restTemplate = new RestTemplate();
         restTemplate.setRequestFactory(httpRequestFactory());
@@ -39,7 +39,7 @@ public class RestTemplateConfiguration {
         return restTemplate;
     }
 
-    @Bean
+    @Bean("silentRestTemplate")
     public RestTemplate silentRestTemplate() {
         final RestTemplate restTemplate = new RestTemplate();
         restTemplate.setRequestFactory(httpRequestFactory());

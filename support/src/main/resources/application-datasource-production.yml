@@ -1,6 +1,8 @@
 spring:
   jpa:
     open-in-view: false
+    hibernate:
+      ddl-auto: update
   datasource:
     driver-class-name: org.h2.Driver
     hikari:
@@ -14,4 +16,4 @@ spring:
       driver-class-name: org.h2.Driver
       username: sa
       password: sa
-      jdbc-url: jdbc:h2:./db/production.h2
+      jdbc-url: jdbc:h2:../db/production.h2

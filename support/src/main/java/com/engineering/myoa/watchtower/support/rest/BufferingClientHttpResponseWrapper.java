@@ -1,4 +1,4 @@
-package com.engineering.myoa.watchtower.support.configuration;
+package com.engineering.myoa.watchtower.support.rest;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

@@ -27,18 +27,15 @@ import lombok.NoArgsConstructor;
  */
 @Getter
 @Entity
-@Table(name = "ppomppu_domestic_send_history")
+@Table(name = "ppomppu_domestic_multicast_history")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DomesticSendHistory {
+public class DomesticMulticastHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column
-    String memberId;
 
     @Column
     Long articleId;

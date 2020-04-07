@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.engineering.myoa.watchtower.crawler.doamin.ppomppu.DomesticCategory;
-import com.engineering.myoa.watchtower.crawler.doamin.ppomppu.DomesticSendHistory;
+import com.engineering.myoa.watchtower.crawler.doamin.ppomppu.DomesticMulticastHistory;
 import com.engineering.myoa.watchtower.crawler.repository.ppomppu.DomesticSendHistoryRepository;
 
 /**
@@ -25,15 +25,16 @@ public class DomesticSendHistoryService {
         this.domesticSendHistoryRepository = domesticSendHistoryRepository;
     }
 
-    public DomesticSendHistory save(DomesticSendHistory history) {
+    public DomesticMulticastHistory save(DomesticMulticastHistory history) {
         return domesticSendHistoryRepository.save(history);
     }
 
-    public List<DomesticSendHistory> findByMember(String memberId) {
+    public List<DomesticMulticastHistory> findByMember(String memberId) {
         return domesticSendHistoryRepository.findByMemberId(memberId);
     }
 
-    public Optional<DomesticSendHistory> findByMemberAndCategory(String memberId, DomesticCategory category) {
+    public Optional<DomesticMulticastHistory> findByMemberAndCategory(String memberId,
+                                                                      DomesticCategory category) {
         return domesticSendHistoryRepository.findByMemberIdAndCategory(memberId, category);
     }
 }
