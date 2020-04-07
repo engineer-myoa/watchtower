@@ -1,6 +1,11 @@
-pluginManagement {
-	repositories {
-		gradlePluginPortal()
-	}
-}
 rootProject.name = 'myoa-watchtower'
+
+include 'myoa-watchtower-admin'
+project(':myoa-watchtower-admin').projectDir = "$rootDir/admin" as File
+
+include 'myoa-watchtower-crawler'
+project(':myoa-watchtower-crawler').projectDir = "$rootDir/crawler" as File
+
+include 'myoa-watchtower-support'
+project(':myoa-watchtower-support').projectDir = "$rootDir/support" as File
+

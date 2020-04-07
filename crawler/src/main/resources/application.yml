@@ -1,0 +1,11 @@
+server:
+  port: 20081
+  use-forward-headers: true
+
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  profiles:
+    active: development
+  application:
+    name: crawler

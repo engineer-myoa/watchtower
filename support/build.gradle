@@ -1,0 +1,17 @@
+apply from: "../dependencies.gradle"
+dependencies {
+
+    implementation boot_essential
+    implementation boot.jpa
+    implementation jackson
+    implementation common.lombok
+    implementation common.mysql
+    implementation common.h2
+    
+    implementation common.httpclient
+    implementation common.httpcore
+
+    annotationProcessor common.lombok
+
+    testImplementation boot.test
+}

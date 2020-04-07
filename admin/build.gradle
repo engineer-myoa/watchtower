@@ -1,0 +1,13 @@
+apply from: "../dependencies.gradle"
+dependencies {
+    compile project(':myoa-watchtower-support')
+
+    implementation common.jsr305
+    implementation common.handlebars
+    implementation common.jpaMeta
+    implementation common.javax_validation
+    implementation common.inject
+    implementation common.groovy
+    testImplementation common.spock
+    testImplementation common.spock_spring
+}
