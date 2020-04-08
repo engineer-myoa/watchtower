@@ -76,7 +76,7 @@ public class DomesticMulticastHistory {
                                                 .orElseGet(DomesticArticle::ofNull);
 
         logger.info("[DomesticMulticastHistory.update] category: {}, latest articleId: {}",
-                    latestArticle.getCategory(), latestArticle.getArticleId());
+                    latestArticle.getCategory().getDescription(), latestArticle.getArticleId());
         this.articleId = latestArticle.getArticleId();
     }
 

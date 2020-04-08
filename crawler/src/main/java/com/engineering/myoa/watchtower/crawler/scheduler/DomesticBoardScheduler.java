@@ -24,7 +24,7 @@ public class DomesticBoardScheduler {
         this.crawler = crawler;
     }
 
-    @Scheduled(cron = "0 */5 * ? * *")
+    @Scheduled(cron = "0 3/5 * ? * *")
     public void crawl() {
         Arrays.stream(DomesticCategory.values())
               .forEach(crawler::execute);

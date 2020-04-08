@@ -34,7 +34,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DomesticArticle {
+public class DomesticArticle implements PpomppuArticle {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.engineering.myoa.watchtower.crawler.doamin.ppomppu.DomesticArticle;
 import com.engineering.myoa.watchtower.crawler.doamin.ppomppu.DomesticCategory;
 import com.engineering.myoa.watchtower.crawler.doamin.ppomppu.DomesticMulticastHistory;
+import com.engineering.myoa.watchtower.crawler.doamin.ppomppu.PpomppuArticle;
+import com.engineering.myoa.watchtower.crawler.doamin.ppomppu.PpomppuCategory;
 import com.engineering.myoa.watchtower.crawler.doamin.ppomppu.SubscribedDomesticCategory;
 import com.engineering.myoa.watchtower.crawler.properties.ApiProperties;
 import com.engineering.myoa.watchtower.support.rest.TelegramNotificator;
@@ -54,12 +56,17 @@ public class DomesticMulticaster {
         DomesticMulticastHistory history = getMulticastHistory(category);
         log.info("[execute] get history. {}", history);
         List<DomesticArticle> articles = getArticles(category, history);
+        if (articles.isEmpty()) {
+            log.info("[execute] skipped : {}", category.getDescription());
+            return;
+        }
 
         List<String> subscribedUsers = getSubscribedUsers(category);
-        multicast(articles, subscribedUsers);
+        multicast(category, articles, subscribedUsers);
 
         history.update(articles);
-        log.info("[execute] history {} updated to articleId: {}", category, history.getArticleId());
+        log.info("[execute] history {} updated to articleId: {}", category.getDescription(),
+                 history.getArticleId());
 
         domesticMulticastQueryAdaptor.save(history);
     }
@@ -80,21 +87,22 @@ public class DomesticMulticaster {
                                                      .collect(Collectors.toList());
     }
 
-    private void multicast(List<DomesticArticle> articles, List<String> users) {
-        if (articles.isEmpty()) {
-            return;
-        }
-
-        String message = toMessage(articles);
+    private <C extends PpomppuCategory, A extends PpomppuArticle> void multicast(C category,
+                                                                                 List<A> articles,
+                                                                                 List<String> users) {
+        String message = toMessage(category, articles);
         users.forEach(user -> telegramNotificator.notifyMessage(user, message));
     }
 
-    private String toMessage(List<DomesticArticle> articles) {
-        return articles.stream()
-                       .map(article -> String.format(">> %s\n"
-                                                     + "%s",
-                                                     article.getTitle(),
-                                                     ppomppuUrl + article.getLink()))
-                       .collect(Collectors.joining("\n\n"));
+    // @TODO Create PpomppuArticle factory
+    private <C extends PpomppuCategory, A extends PpomppuArticle> String toMessage(C category,
+                                                                                   List<A> articles) {
+        return String.format("[%s%s]\n", category.getMessagePrefix(), category.getDescription())
+               + articles.stream()
+                         .map(article -> String.format(">> %s\n"
+                                                       + "%s",
+                                                       article.getTitle(),
+                                                       ppomppuUrl + article.getLink()))
+                         .collect(Collectors.joining("\n\n"));
     }
 }
