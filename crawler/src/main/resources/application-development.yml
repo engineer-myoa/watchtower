@@ -1,7 +1,7 @@
 spring:
   profiles:
     active: development
-    include: datasource-development, resttemplate-development
+    include: datasource-development, resttemplate-development, sensitive-development
 
 api:
   apis:
@@ -9,3 +9,5 @@ api:
       api-path: http://www.ppomppu.co.kr/zboard/zboard.php?id=ppomppu&category=%s
     - api-name: ppomppu-oversea
       api-path: http://www.ppomppu.co.kr/zboard/zboard.php?id=ppomppu4&category=%s
+    - api-name: ppomppu
+      api-path: http://www.ppomppu.co.kr/zboard/

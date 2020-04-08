@@ -51,6 +51,9 @@ public class DomesticArticle {
     private String title;
 
     @Column
+    private String link;
+
+    @Column
     private String thumbnailUrl;
 
     @Column
@@ -75,6 +78,7 @@ public class DomesticArticle {
                               .category(category)
                               .articleId(Long.parseLong(articleId))
                               .title(PpomppuArticleExtractor.getTitle(element))
+                              .link(PpomppuArticleExtractor.getLink(element))
                               .thumbnailUrl(PpomppuArticleExtractor.getThumbnail(element))
                               .build();
 

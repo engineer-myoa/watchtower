@@ -4,6 +4,7 @@ dependencies {
 
     implementation boot_essential
     implementation boot.jpa
+    implementation common.lombok
     implementation common.jsr305
     implementation common.handlebars
     implementation common.jpaMeta

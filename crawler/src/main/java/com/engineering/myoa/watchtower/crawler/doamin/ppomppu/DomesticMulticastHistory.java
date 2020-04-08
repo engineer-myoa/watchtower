@@ -14,6 +14,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,6 +35,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class DomesticMulticastHistory {
+    private static final Logger logger = LoggerFactory.getLogger(DomesticMulticastHistory.class);
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -64,12 +67,16 @@ public class DomesticMulticastHistory {
     public void update(List<DomesticArticle> articles) {
 
         if (articles.stream().anyMatch(this::isDifferentCategory)) {
+            logger.info("[DomesticMulticastHistory.update] Different category. skipped to: {}", this.articleId);
             return;
         }
 
         DomesticArticle latestArticle = articles.stream()
                                                 .max((o1, o2) -> o1.getArticleId().compareTo(o2.getArticleId()))
                                                 .orElseGet(DomesticArticle::ofNull);
+
+        logger.info("[DomesticMulticastHistory.update] category: {}, latest articleId: {}",
+                    latestArticle.getCategory(), latestArticle.getArticleId());
         this.articleId = latestArticle.getArticleId();
     }
 
@@ -82,5 +89,16 @@ public class DomesticMulticastHistory {
                                        .articleId(0L)
                                        .category(category)
                                        .build();
+    }
+
+    @Override
+    public String toString() {
+        return "DomesticMulticastHistory{" +
+               "id=" + id +
+               ", articleId=" + articleId +
+               ", category=" + category +
+               ", createdAt=" + createdAt +
+               ", modifiedAt=" + modifiedAt +
+               '}';
     }
 }

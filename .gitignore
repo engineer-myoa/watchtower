@@ -5,6 +5,9 @@ build/
 !**/src/main/**
 !**/src/test/**
 /db
+/datasource
+/bootable
+/support/src/main/resources/application-sensitive-*.yml
 
 ### STS ###
 .apt_generated

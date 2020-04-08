@@ -38,7 +38,6 @@ public class ApiProperties {
 
     @Cacheable(cacheManager = "ehCacheManager", value = { EhCacheNames.CRAWLER_META }, key = "#apiName")
     public ApiProperty findByApiName(String apiName) {
-        log.info("HI findByApiName");
         return apis.stream()
                    .filter(e -> e.getApiName().equals(apiName))
                    .findFirst()

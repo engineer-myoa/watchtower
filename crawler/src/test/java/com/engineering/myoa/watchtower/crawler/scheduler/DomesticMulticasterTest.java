@@ -1,16 +1,13 @@
 package com.engineering.myoa.watchtower.crawler.scheduler;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.concurrent.Executor;
 
-import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -19,16 +16,16 @@ import org.springframework.core.task.SyncTaskExecutor;
 
 import com.engineering.myoa.watchtower.crawler.CrawlerApplication;
 import com.engineering.myoa.watchtower.crawler.doamin.ppomppu.DomesticCategory;
-import com.engineering.myoa.watchtower.crawler.service.ppomppu.DomesticArticleCrawler;
+import com.engineering.myoa.watchtower.crawler.service.ppomppu.DomesticMulticaster;
 
 /**
- * DomesticBoardSchedulerTest
+ * DomesticMulticastSchedulerTest
  * @author Shin Woo-jin (lp12254@linecorp.com)
- * @since 2020-04-07
+ * @since 2020-04-08
  *
  */
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-class DomesticBoardSchedulerTest {
+class DomesticMulticasterTest {
 
     @Configuration
     @Import(CrawlerApplication.class)
@@ -41,16 +38,13 @@ class DomesticBoardSchedulerTest {
     }
 
     @Autowired
-    DomesticArticleCrawler crawler;
-
-    @Autowired
-    @Qualifier("ehCacheManager")
-    CacheManager cacheManager;
+    DomesticMulticaster multicaster;
 
     @Test
-    @Ignore
+//    @Ignore
     void crawl() throws IOException {
-        Arrays.stream(DomesticCategory.values())
-              .forEach(crawler::execute);
+        Collections.singletonList(DomesticCategory.COMPUTER)
+                   .forEach(multicaster::execute);
     }
+
 }

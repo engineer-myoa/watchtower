@@ -2,8 +2,9 @@ spring:
   jpa:
     open-in-view: false
     hibernate:
-      ddl-auto: update
-    generate-ddl: true
+      ddl-auto: none
+    generate-ddl: false
+    database-platform: org.hibernate.dialect.H2Dialect
   datasource:
     driver-class-name: org.h2.Driver
     hikari:
@@ -16,9 +17,7 @@ spring:
       auto-commit: false
       driver-class-name: org.h2.Driver
       username: sa
-      password: sa
-      jdbc-url: jdbc:h2:../db/development.h2
-
+      jdbc-url: jdbc:h2:./datasource/development.h2;AUTO_SERVER=true
   h2:
     console:
       enabled: true

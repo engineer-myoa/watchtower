@@ -20,8 +20,10 @@ public class TelegramMessage {
     @JsonProperty(value = "chat_id")
     String chatId;
     String text;
+    @JsonProperty(value = "disable_web_page_preview")
+    String disableWebPagePreview;
 
     public static TelegramMessage of(String chatId, String text) {
-        return new TelegramMessage(chatId, text);
+        return new TelegramMessage(chatId, text, "Ture");
     }
 }

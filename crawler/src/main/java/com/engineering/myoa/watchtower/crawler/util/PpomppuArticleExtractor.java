@@ -10,6 +10,12 @@ import org.jsoup.nodes.Element;
  */
 public class PpomppuArticleExtractor {
 
+    public static String getArticleId(Element element) {
+        return element.getElementsByTag("td")
+                      .get(0)
+                      .text();
+    }
+
     public static String getTitle(Element element) {
         return element.getElementsByTag("td")
                       .get(5)
@@ -17,16 +23,17 @@ public class PpomppuArticleExtractor {
                       .text();
     }
 
+    public static String getLink(Element element) {
+        return element.getElementsByTag("td")
+                      .get(5)
+                      .getElementsByTag("a")
+                      .attr("href");
+    }
+
     public static String getThumbnail(Element element) {
         return element.getElementsByTag("td")
                       .get(3)
                       .getElementsByTag("img")
                       .attr("src");
-    }
-
-    public static String getArticleId(Element element) {
-        return element.getElementsByTag("td")
-                      .get(0)
-                      .text();
     }
 }

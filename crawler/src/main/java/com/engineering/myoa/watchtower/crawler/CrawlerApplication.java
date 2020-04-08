@@ -7,6 +7,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 import com.engineering.myoa.watchtower.support.cache.EhCacheConfiguration;
 import com.engineering.myoa.watchtower.support.rest.RestTemplateConfiguration;
+import com.engineering.myoa.watchtower.support.sensitive.SensitiveDataConfiguration;
 
 /**
  * CrawlerApplication
@@ -18,6 +19,7 @@ import com.engineering.myoa.watchtower.support.rest.RestTemplateConfiguration;
 @SpringBootApplication
 @Import({
         RestTemplateConfiguration.class, EhCacheConfiguration.class,
+        SensitiveDataConfiguration.class
 })
 public class CrawlerApplication {
     public static void main(String[] args) {

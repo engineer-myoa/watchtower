@@ -16,16 +16,19 @@ plugins {
     id 'idea'
     id 'io.spring.dependency-management' version '1.0.8.RELEASE'
     id 'org.springframework.boot' version '2.2.6.RELEASE'
+    id 'net.ltgt.apt' version '0.20'
+    id "de.undercouch.download" version "4.0.4"
 }
 
 allprojects {
-    group = 'com.engineering.myoa'
+    group = 'com.engineering.myoa.watchtower'
 
     apply plugin: 'java'
     apply plugin: 'idea'
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'org.springframework.boot'
-
+    apply plugin: 'net.ltgt.apt-idea'
+    apply plugin: 'de.undercouch.download'
 
     sourceCompatibility = '1.8'
     targetCompatibility = '1.8'
@@ -50,7 +53,7 @@ allprojects {
 }
 
 jar {
-    enabled = true
+    enabled = false
 }
 
 bootJar {

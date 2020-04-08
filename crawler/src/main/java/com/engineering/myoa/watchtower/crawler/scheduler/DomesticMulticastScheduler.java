@@ -24,7 +24,7 @@ public class DomesticMulticastScheduler {
         this.multicaster = multicaster;
     }
 
-    @Scheduled(cron = "0 */3 * ? * *")
+    @Scheduled(cron = "0 */2 * ? * *")
     public void multicast() {
         Arrays.stream(DomesticCategory.values())
               .forEach(multicaster::execute);

@@ -1,0 +1,14 @@
+# Please copy this and projection each profile.
+# When done, include properties to sub-project that needed.
+# And do not add projected properties!
+sensitive:
+  init: true
+  token:
+    tokens:
+      - token-name: telegram-bot
+        token-value: engineer-myoa
+
+spring:
+  datasource:
+    hikari:
+      password: engineer-myoa

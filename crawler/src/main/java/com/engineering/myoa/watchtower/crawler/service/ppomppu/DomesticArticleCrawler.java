@@ -101,7 +101,7 @@ public class DomesticArticleCrawler {
         private String html;
 
         public static CrawlingResult of(DomesticCategory category, String html) {
-            return new CrawlingResult(category, html);
+            return new CrawlingResult(category, html.replaceAll("&amp;", "&"));
         }
     }
 }

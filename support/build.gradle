@@ -17,3 +17,11 @@ dependencies {
 
     testImplementation boot.test
 }
+
+jar {
+    enabled = true
+}
+
+bootJar {
+    enabled = false
+}

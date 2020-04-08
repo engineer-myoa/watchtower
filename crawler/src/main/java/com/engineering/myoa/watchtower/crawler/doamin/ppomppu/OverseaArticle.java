@@ -48,6 +48,9 @@ public class OverseaArticle {
     private String title;
 
     @Column
+    private String link;
+
+    @Column
     private String thumbnailUrl;
 
     @Column
