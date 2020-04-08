@@ -28,8 +28,13 @@ public enum DomesticCategory {
     private String description;
     private String page;
     private static final String API_NAME = "ppomppu-domestic";
+    private static final String MESSAGE_PREFIX = "국내 게시판 - ";
 
     public String getApiUnitName() {
         return this.API_NAME;
+    }
+
+    public String getMessagePrefix() {
+        return this.MESSAGE_PREFIX;
     }
 }

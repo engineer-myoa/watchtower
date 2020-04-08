@@ -38,28 +38,28 @@ public class DomesticArticleCrawler {
 
     private final ApiProperties apiProperties;
     private final RestTemplate restTemplate;
-    private final DomesticArticleService domesticArticleService;
+    private final DomesticArticleQueryAdaptor domesticArticleQueryAdaptor;
 
     public DomesticArticleCrawler(
             ApiProperties apiProperties,
             @Qualifier("verboseRestTemplate") RestTemplate restTemplate,
-            DomesticArticleService domesticArticleService) {
+            DomesticArticleQueryAdaptor domesticArticleQueryAdaptor) {
         this.apiProperties = apiProperties;
         this.restTemplate = restTemplate;
-        this.domesticArticleService = domesticArticleService;
+        this.domesticArticleQueryAdaptor = domesticArticleQueryAdaptor;
     }
 
     @Async("asyncThreadPoolTaskExecutor")
     @Transactional(propagation = Propagation.REQUIRED)
     public void execute(DomesticCategory category) {
         CrawlingResult crawl = this.crawl(category);
-        DomesticArticle latestArticle = domesticArticleService.getLatestArticleByCategory(category)
-                                                              .orElseGet(DomesticArticle::ofNull);
+        DomesticArticle latestArticle = domesticArticleQueryAdaptor.getLatestArticleByCategory(category)
+                                                                   .orElseGet(DomesticArticle::ofNull);
 
         List<DomesticArticle> domesticArticles = this.filterNotPersisted(this.extractArticle(crawl),
                                                                          latestArticle);
 
-        domesticArticleService.save(domesticArticles);
+        domesticArticleQueryAdaptor.save(domesticArticles);
     }
 
     public CrawlingResult crawl(DomesticCategory category) {

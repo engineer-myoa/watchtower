@@ -17,10 +17,9 @@ import com.engineering.myoa.watchtower.crawler.doamin.ppomppu.DomesticMulticastH
  *
  */
 @Repository
-public interface DomesticSendHistoryRepository extends JpaRepository<DomesticMulticastHistory, Long>,
-                                                       JpaSpecificationExecutor<DomesticMulticastHistory> {
+public interface DomesticMulticastHistoryRepository extends JpaRepository<DomesticMulticastHistory, Long>,
+                                                            JpaSpecificationExecutor<DomesticMulticastHistory> {
+    List<DomesticMulticastHistory> findByCategory(DomesticCategory category);
 
-    List<DomesticMulticastHistory> findByMemberId(String memberId);
-
-    Optional<DomesticMulticastHistory> findByMemberIdAndCategory(String memberId, DomesticCategory category);
+    Optional<DomesticMulticastHistory> findTopByCategoryOrderByIdDesc(DomesticCategory category);
 }

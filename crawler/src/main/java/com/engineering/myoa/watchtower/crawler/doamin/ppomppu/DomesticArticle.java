@@ -61,6 +61,10 @@ public class DomesticArticle {
     @UpdateTimestamp
     private LocalDateTime modifiedAt;
 
+    public boolean isSameCategory(DomesticCategory category) {
+        return this.category == category;
+    }
+
     public static DomesticArticle of(Element element, DomesticCategory category) {
         String articleId = PpomppuArticleExtractor.getArticleId(element);
         if (articleId.isEmpty()) {

@@ -1,6 +1,7 @@
 package com.engineering.myoa.watchtower.crawler.doamin.ppomppu;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -51,4 +52,35 @@ public class DomesticMulticastHistory {
     @Column
     @UpdateTimestamp
     private LocalDateTime modifiedAt;
+
+    public void update(DomesticArticle article) {
+        if (isDifferentCategory(article)) {
+            return;
+        }
+
+        this.articleId = article.getArticleId();
+    }
+
+    public void update(List<DomesticArticle> articles) {
+
+        if (articles.stream().anyMatch(this::isDifferentCategory)) {
+            return;
+        }
+
+        DomesticArticle latestArticle = articles.stream()
+                                                .max((o1, o2) -> o1.getArticleId().compareTo(o2.getArticleId()))
+                                                .orElseGet(DomesticArticle::ofNull);
+        this.articleId = latestArticle.getArticleId();
+    }
+
+    private boolean isDifferentCategory(DomesticArticle article) {
+        return !article.isSameCategory(this.category);
+    }
+
+    public static DomesticMulticastHistory ofNull(DomesticCategory category) {
+        return DomesticMulticastHistory.builder()
+                                       .articleId(0L)
+                                       .category(category)
+                                       .build();
+    }
 }

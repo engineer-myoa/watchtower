@@ -16,11 +16,11 @@ import com.engineering.myoa.watchtower.crawler.repository.ppomppu.DomesticArticl
  *
  */
 @Service
-public class DomesticArticleService {
+public class DomesticArticleQueryAdaptor {
 
     private final DomesticArticleRepository domesticArticleRepository;
 
-    public DomesticArticleService(
+    public DomesticArticleQueryAdaptor(
             DomesticArticleRepository domesticArticleRepository) {
         this.domesticArticleRepository = domesticArticleRepository;
     }
@@ -35,5 +35,10 @@ public class DomesticArticleService {
 
     public Optional<DomesticArticle> getLatestArticleByCategory(DomesticCategory category) {
         return domesticArticleRepository.findTopByCategoryOrderByArticleIdDesc(category);
+    }
+
+    public List<DomesticArticle> getArticles(DomesticCategory category, Long greaterThanArticleId) {
+        return domesticArticleRepository
+                .findByCategoryAndArticleIdGreaterThanOrderByIdAsc(category, greaterThanArticleId);
     }
 }

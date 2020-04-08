@@ -32,15 +32,4 @@ public class EhCacheConfiguration {
         factoryBean.setCacheManagerUri(new ClassPathResource("ehcache/default.xml").getURI());
         return factoryBean;
     }
-//        return new EhcacheManager(ehCacheDefaultCache().getObject());
-//    }
-//
-//    @Bean
-//    public EhCacheManagerFactoryBean ehCacheDefaultCache() {
-//        final EhCacheManagerFactoryBean factoryBean = new EhCacheManagerFactoryBean();
-//        factoryBean.setConfigLocation(new ClassPathResource("ehcache/default.xml"));
-//        factoryBean.setShared(true);
-//        return factoryBean;
-//    }
-
 }
