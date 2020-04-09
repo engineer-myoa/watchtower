@@ -25,7 +25,7 @@ import com.engineering.myoa.watchtower.crawler.service.ppomppu.DomesticMulticast
  *
  */
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-class DomesticMulticasterTest {
+class OverseaMulticasterTest {
 
     @Configuration
     @Import(CrawlerApplication.class)

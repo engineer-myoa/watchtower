@@ -13,6 +13,9 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.jsoup.nodes.Element;
+
+import com.engineering.myoa.watchtower.crawler.util.PpomppuArticleExtractor;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -61,4 +64,29 @@ public class OverseaArticle implements PpomppuArticle {
     @UpdateTimestamp
     private LocalDateTime modifiedAt;
 
+    public boolean isSameCategory(OverseaCategory category) {
+        return this.category == category;
+    }
+
+    public static OverseaArticle of(Element element, OverseaCategory category) {
+        String articleId = PpomppuArticleExtractor.getArticleId(element);
+        if (articleId.isEmpty()) {
+            return null;
+        }
+
+        return OverseaArticle.builder()
+                             .category(category)
+                             .articleId(Long.parseLong(articleId))
+                             .title(PpomppuArticleExtractor.getTitle(element))
+                             .link(PpomppuArticleExtractor.getLink(element))
+                             .thumbnailUrl(PpomppuArticleExtractor.getThumbnail(element))
+                             .build();
+
+    }
+
+    public static OverseaArticle ofNull() {
+        return OverseaArticle.builder()
+                             .articleId(0L)
+                             .build();
+    }
 }
