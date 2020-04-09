@@ -11,7 +11,7 @@ import com.engineering.myoa.watchtower.crawler.doamin.ppomppu.DomesticCategory;
 import com.engineering.myoa.watchtower.crawler.doamin.ppomppu.DomesticMulticastHistory;
 
 /**
- * SendHistoryRepository
+ * DomesticMulticastHistoryRepository
  * @author Shin Woo-jin (lp12254@linecorp.com)
  * @since 2020-04-07
  *
