@@ -95,6 +95,7 @@ public class DomesticMulticaster {
     }
 
     // @TODO Create PpomppuArticle factory
+    // @TODO Article registered time
     private <C extends PpomppuCategory, A extends PpomppuArticle> String toMessage(C category,
                                                                                    List<A> articles) {
         return String.format("[%s%s]\n", category.getMessagePrefix(), category.getDescription())

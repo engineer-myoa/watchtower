@@ -23,6 +23,7 @@ import com.engineering.myoa.watchtower.crawler.properties.ApiProperties;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * DomesticArticleCrawler
@@ -30,6 +31,7 @@ import lombok.Getter;
  * @since 2020-04-07
  *
  */
+@Slf4j
 @Component
 public class DomesticArticleCrawler {
 
@@ -59,6 +61,7 @@ public class DomesticArticleCrawler {
         List<DomesticArticle> domesticArticles = this.filterNotPersisted(this.extractArticle(crawl),
                                                                          latestArticle);
 
+        log.info("[DomesticArticleCrawler.execute] crawled count : {}", domesticArticles.size());
         domesticArticleQueryAdaptor.save(domesticArticles);
     }
 

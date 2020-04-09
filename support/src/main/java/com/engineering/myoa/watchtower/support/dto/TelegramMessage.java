@@ -21,9 +21,9 @@ public class TelegramMessage {
     String chatId;
     String text;
     @JsonProperty(value = "disable_web_page_preview")
-    String disableWebPagePreview;
+    Boolean disableWebPagePreview;
 
     public static TelegramMessage of(String chatId, String text) {
-        return new TelegramMessage(chatId, text, "Ture");
+        return new TelegramMessage(chatId, text, true);
     }
 }
