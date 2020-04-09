@@ -1,10 +1,14 @@
 package com.engineering.myoa.watchtower.crawler.repository.ppomppu;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import com.engineering.myoa.watchtower.crawler.doamin.ppomppu.DomesticArticle;
+import com.engineering.myoa.watchtower.crawler.doamin.ppomppu.DomesticCategory;
 
 /**
  * DomesticArticleRepository
@@ -15,4 +19,8 @@ import com.engineering.myoa.watchtower.crawler.doamin.ppomppu.DomesticArticle;
 @Repository
 public interface DomesticArticleRepository extends JpaRepository<DomesticArticle, Long>,
                                                    JpaSpecificationExecutor<DomesticArticle> {
+    Optional<DomesticArticle> findTopByCategoryOrderByArticleIdDesc(DomesticCategory category);
+
+    List<DomesticArticle> findByCategoryAndArticleIdGreaterThanOrderByIdAsc(DomesticCategory category,
+                                                                            Long articleId);
 }

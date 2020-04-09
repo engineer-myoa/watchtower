@@ -1,9 +1,11 @@
-package com.engineering.myoa.watchtower.support.configuration;
+package com.engineering.myoa.watchtower.support.rest;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import org.springframework.http.HttpRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
@@ -46,7 +48,9 @@ public class RestTemplateLogInterceptor implements ClientHttpRequestInterceptor 
 
     private void printRequest(HttpRequest request, byte[] body) {
         try {
-            log.info("[REQUEST] uri : {} method : {}  body : {}",
+            log.info("\n[REQUEST] <<<-----------------------------------------------"
+                     + "\nuri : {}, method : {}"
+                     + "\nbody : {}",
                      request.getURI(),
                      request.getMethod(),
                      new String(body, StandardCharsets.UTF_8));
@@ -57,23 +61,32 @@ public class RestTemplateLogInterceptor implements ClientHttpRequestInterceptor 
 
     private void printResponse(BufferingClientHttpResponseWrapper responseWrapper) {
         try {
-            log.info("[RESPONSE]-----------------------------------------------"
+            HttpStatus statusCode = responseWrapper.getStatusCode();
+            MediaType contentType = responseWrapper.getHeaders().getContentType();
+            log.info("\n[RESPONSE] <<<-----------------------------------------------"
                      + "\nstatusCode : {}"
-                     + "\nstatusText : {}"
-                     + "\ncontentType : {}",
-                     responseWrapper.getStatusCode(),
-                     responseWrapper.getStatusText(),
-                     responseWrapper.getHeaders().getContentType());
+                     + "\ncontentType : {}"
+                     + "\n----------------------------------------------->>>",
+                     statusCode,
+                     contentType);
 
             String response = StreamUtils.copyToString(responseWrapper.getBody(), StandardCharsets.UTF_8);
-            if (!StringUtils.isEmpty(response)) {
+
+            if (isTextTypeResponse(contentType)) {
+                // do nothing
+                response = "[CAUTION] text type is TL;DW";
+            } else if (!StringUtils.isEmpty(response)) {
                 response = mapper.writeValueAsString(
                         mapper.readValue(response, Object.class));
             }
-            log.info("body : {}"
-                     + "\n-----------------------------------------------", response);
+            log.info("\nbody : {}"
+                     + "\n----------------------------------------------->>>", response);
         } catch (Exception e) {
             log.error("[printResponse] error ", e);
         }
+    }
+
+    private boolean isTextTypeResponse(MediaType mediaType) {
+        return mediaType.getType().equals("text");
     }
 }

@@ -20,18 +20,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * DomesticSendHistory
+ * SubscribedDomesticCategory
  * @author Shin Woo-jin (lp12254@linecorp.com)
  * @since 2020-04-07
  *
  */
-@Getter
 @Entity
-@Table(name = "ppomppu_domestic_send_history")
-@NoArgsConstructor
+@Table(name = "ppomppu_subscribed_domestic_category")
+@Getter
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class DomesticSendHistory {
+public class SubscribedDomesticCategory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,17 +41,14 @@ public class DomesticSendHistory {
     String memberId;
 
     @Column
-    Long articleId;
-
-    @Column
     @Enumerated(EnumType.STRING)
-    private DomesticCategory category;
+    DomesticCategory category;
 
     @Column
     @CreationTimestamp
-    private LocalDateTime createdAt;
+    LocalDateTime createdAt;
 
     @Column
     @UpdateTimestamp
-    private LocalDateTime modifiedAt;
+    LocalDateTime modifiedAt;
 }

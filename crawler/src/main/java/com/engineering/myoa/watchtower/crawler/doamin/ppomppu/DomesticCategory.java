@@ -11,7 +11,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum DomesticCategory {
+public enum DomesticCategory implements PpomppuCategory {
     ETC("기타", "1"),
     COMPUTER("컴퓨터", "4"),
     DIGITAL("디지털", "5"),
@@ -27,4 +27,21 @@ public enum DomesticCategory {
 
     private String description;
     private String page;
+    private static final String API_NAME = "ppomppu-domestic";
+    private static final String MESSAGE_PREFIX = "국내 게시판 - ";
+
+    @Override
+    public String getApiUnitName() {
+        return this.API_NAME;
+    }
+
+    @Override
+    public String getMessagePrefix() {
+        return this.MESSAGE_PREFIX;
+    }
+
+    @Override
+    public String getCode() {
+        return this.name();
+    }
 }

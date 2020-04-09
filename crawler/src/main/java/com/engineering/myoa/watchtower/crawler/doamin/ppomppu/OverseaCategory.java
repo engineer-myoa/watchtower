@@ -11,7 +11,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum OverseaCategory {
+public enum OverseaCategory implements PpomppuCategory {
     ETC("기타", "1"),
     HOME_APPLIANCE("가전", "7"),
     VIDEO("TV/영상", "8"),
@@ -27,4 +27,21 @@ public enum OverseaCategory {
 
     private String description;
     private String page;
+    private static final String API_NAME = "ppomppu-oversea";
+    private static final String MESSAGE_PREFIX = "해외 게시판 - ";
+
+    @Override
+    public String getApiUnitName() {
+        return this.API_NAME;
+    }
+
+    @Override
+    public String getMessagePrefix() {
+        return this.MESSAGE_PREFIX;
+    }
+
+    @Override
+    public String getCode() {
+        return this.name();
+    }
 }

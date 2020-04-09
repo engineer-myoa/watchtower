@@ -4,6 +4,7 @@ dependencies {
 
     implementation boot_essential
     implementation boot.jpa
+    implementation common.lombok
     implementation common.jsr305
     implementation common.handlebars
     implementation common.jpaMeta
@@ -11,9 +12,13 @@ dependencies {
     implementation common.inject
     implementation common.groovy
     implementation common.h2
+    implementation common.ehcache
+    implementation common.cache_api
+    implementation common.jsoup
 
     annotationProcessor common.lombok
 
+    testImplementation boot.test
     testImplementation common.spock
     testImplementation common.spock_spring
 }

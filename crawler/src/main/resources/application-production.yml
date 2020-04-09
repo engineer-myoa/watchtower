@@ -1,4 +1,13 @@
 spring:
   profiles:
     active: production
-    include: datasource-production
+    include: datasource-production, resttemplate-production
+
+api:
+  apis:
+    - api-name: ppomppu-domestic
+      api-path: http://www.ppomppu.co.kr/zboard/zboard.php?id=ppomppu&category=%s
+    - api-name: ppomppu-oversea
+      api-path: http://www.ppomppu.co.kr/zboard/zboard.php?id=ppomppu4&category=%s
+    - api-name: ppomppu
+      api-path: http://www.ppomppu.co.kr/zboard/

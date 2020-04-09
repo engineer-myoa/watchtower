@@ -31,7 +31,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OverseaArticle {
+public class OverseaArticle implements PpomppuArticle {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,6 +46,9 @@ public class OverseaArticle {
 
     @Column
     private String title;
+
+    @Column
+    private String link;
 
     @Column
     private String thumbnailUrl;

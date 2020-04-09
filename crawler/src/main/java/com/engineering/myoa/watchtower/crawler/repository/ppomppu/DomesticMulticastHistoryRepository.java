@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import com.engineering.myoa.watchtower.crawler.doamin.ppomppu.DomesticCategory;
-import com.engineering.myoa.watchtower.crawler.doamin.ppomppu.DomesticSendHistory;
+import com.engineering.myoa.watchtower.crawler.doamin.ppomppu.DomesticMulticastHistory;
 
 /**
  * SendHistoryRepository
@@ -17,10 +17,9 @@ import com.engineering.myoa.watchtower.crawler.doamin.ppomppu.DomesticSendHistor
  *
  */
 @Repository
-public interface DomesticSendHistoryRepository extends JpaRepository<DomesticSendHistory, Long>,
-                                                       JpaSpecificationExecutor<DomesticSendHistory> {
+public interface DomesticMulticastHistoryRepository extends JpaRepository<DomesticMulticastHistory, Long>,
+                                                            JpaSpecificationExecutor<DomesticMulticastHistory> {
+    List<DomesticMulticastHistory> findByCategory(DomesticCategory category);
 
-    List<DomesticSendHistory> findByMemberId(String memberId);
-
-    Optional<DomesticSendHistory> findByMemberIdAndCategory(String memberId, DomesticCategory category);
+    Optional<DomesticMulticastHistory> findTopByCategoryOrderByIdDesc(DomesticCategory category);
 }

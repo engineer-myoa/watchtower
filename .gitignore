@@ -4,7 +4,10 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**
 !**/src/test/**
-db
+/db
+/datasource
+/bootable
+/support/src/main/resources/application-sensitive-*.yml
 
 ### STS ###
 .apt_generated

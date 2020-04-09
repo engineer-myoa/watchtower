@@ -7,11 +7,21 @@ dependencies {
     implementation common.lombok
     implementation common.mysql
     implementation common.h2
-    
+    implementation common.ehcache
+    implementation common.cache_api
+
     implementation common.httpclient
     implementation common.httpcore
 
     annotationProcessor common.lombok
 
     testImplementation boot.test
+}
+
+jar {
+    enabled = true
+}
+
+bootJar {
+    enabled = false
 }
